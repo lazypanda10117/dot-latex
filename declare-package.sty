@@ -100,21 +100,13 @@
 \cs_new:Nn \__declare_package_should_load:n
   {
     \__declare_package_seq_ginsert:Nn \g_declare_package_should_load_packages_seq { #1 }
-    \tl_set:Nn \l_tmpa_tl { g_declare_package_ #1 _pkg_antireqs_seq }
-    \seq_if_exist:cT { \tl_use:N \l_tmpa_tl }
-      {
-        \seq_map_inline:cn { \tl_use:N \l_tmpa_tl }
-          { \__declare_package_seq_ginsert:Nn \g_declare_package_should_not_load_packages_seq { ##1 } }
-      }
+    \seq_map_inline:cn { g_declare_package_ #1 _pkg_antireqs_seq }
+      { \__declare_package_seq_ginsert:Nn \g_declare_package_should_not_load_packages_seq { ##1 } }
 
-    \tl_set:Nn \l_tmpa_tl { g_declare_package_ #1 _pkg_prereqs_seq }
-    \seq_if_exist:cT { \tl_use:N \l_tmpa_tl }
+    \seq_map_inline:cn { g_declare_package_ #1 _pkg_prereqs_seq }
       {
-        \seq_map_inline:cn { \tl_use:N \l_tmpa_tl }
-          {
-            \seq_if_in:NnF \g_declare_package_should_load_packages_seq { ##1 }
-              { \__declare_package_should_load:n { ##1 } }
-          }
+        \seq_if_in:NnF \g_declare_package_should_load_packages_seq { ##1 }
+        { \__declare_package_should_load:n { ##1 } }
       }
   }
 
@@ -149,22 +141,24 @@
 % 1 name
 \cs_new:Nn \__declare_package_load:n
   {
+    \seq_map_inline:cn { g_declare_package_ #1 _pkg_pre_hooks_seq }
+      { \cs:w ##1 \cs_end: }
+
     \tl_set:Nn \l_tmpa_tl { g_declare_package_ #1 _pkg_add_ops_seq }
-    \tl_set:Nn \l_tmpb_tl { g_declare_package_ #1 _pkg_rem_ops_seq }
     \seq_clear:N \l_tmpa_seq
     \seq_if_exist:cT { \tl_use:N \l_tmpa_tl }
       {
         \seq_set_eq:Nc \l_tmpa_seq { \tl_use:N \l_tmpa_tl }
-        \seq_if_exist:cT { \tl_use:N \l_tmpb_tl }
-          {
-            \seq_map_inline:cn { \tl_use:N \l_tmpb_tl }
-              { \seq_remove_all:Nn \l_tmpa_seq { ##1 } }
-          }
+        \seq_map_inline:cn { g_declare_package_ #1 _pkg_rem_ops_seq }
+          { \seq_remove_all:Nn \l_tmpa_seq { ##1 } }
       }
     \tl_set:Nx \l_tmpa_tl { \seq_use:Nn \l_tmpa_seq { ,~ } }
     \tl_if_blank:VF \l_tmpa_tl
       { \PassOptionsToPackage{\tl_use:N \l_tmpa_tl}{#1} }
     \RequirePackage{#1}
+
+    \seq_map_inline:cn { g_declare_package_ #1 _pkg_post_hooks_seq }
+      { \cs:w ##1 \cs_end: }
   }
 
 
@@ -189,11 +183,11 @@
 
     \tl_set:Nn \l_tmpa_tl { __declare_package_ #1 _pkg_init: }
     \cs_new:cn { \tl_use:N \l_tmpa_tl } { #2 }
-    \__declare_package_add_pre_hooks_to_package:nx { #1 } { \tl_use:N \l_tmpa_tl }
+    \__declare_package_add_pre_hooks_to_package:nV { #1 } \l_tmpa_tl
 
     \tl_set:Nn \l_tmpa_tl { __declare_package_ #1 _pkg_config: }
     \cs_new:cn { \tl_use:N \l_tmpa_tl } { #3 }
-    \__declare_package_add_post_hooks_to_package:nx { #1 } { \tl_use:N \l_tmpa_tl }
+    \__declare_package_add_post_hooks_to_package:nV { #1 } \l_tmpa_tl
   }
 \cs_generate_variant:Nn \__declare_package_pkg:nnnnnnnnn { nnnxxxxxn }
 

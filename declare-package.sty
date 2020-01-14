@@ -1,0 +1,79 @@
+\NeedsTeXFormat{LaTeX2e}
+\PassOptionsToPackage{undo-recent-deprecations, check-declarations}{expl3}
+\RequirePackage{expl3}
+\ProvidesExplPackage{declare-package}{01/13/2020}{}{}
+
+% Usage:
+%   \declarepackage { package-name } { required, packages }
+%     { do_i_load_bool }
+%     [ load, after, packages ] [ load, before, packages ]
+%     { config code }
+
+%   \dpkgadddep { dependency, names } { package, names }
+
+%   \dpkginclude
+
+
+\RequirePackage{xparse}
+
+
+\seq_new:N \g_declare_package_packages_seq
+\seq_new:N \g_declare_package_load_packages_seq
+\NewDocumentCommand { \declarepackage } { m m m O{} O{} m }
+  {
+    \tl_set:Nx \l_tmpa_tl { #1 }
+    \seq_gpush:NV \g_declare_package_packages_clist \l_tmpa_tl
+
+    \tl_set:Nx \l_tmpb_tl
+      {
+        c_declare_package_
+        \tl_use:N \l_tmpa_tl
+        _requires_clist
+      }
+    \clist_const:Nx { \tl_use:N \l_tmpb_tl } { #2 }
+
+    \tl_set:Nx \l_tmpb_tl
+      {
+        c_declare_package_
+        \tl_use:N \l_tmpa_tl
+        _load_bool
+      }
+    \bool_const:cn { \tl_use:N \l_tmpb_tl } { #3 }
+
+    \clist_set:Nx \l_tmpa_clist { #4 }
+    \clist_map_inline:Nn \l_tmpa_clist
+      { \dpkgadddep { ##1 } { \tl_use:N \l_tmpa_tl } }
+    \dpkgadddep { \tl_use:N \l_tmpa_tl } { #5 }
+
+    \tl_set:Nx \l_tmpb_tl
+      {
+        __declare_package_
+        \tl_use:N \l_tmpa_tl
+        _config:
+      }
+    \cs_new:cpn { \tl_use:N \l_tmpb_tl } { #6 }
+  }
+
+\NewDocumentCommand { \dpkgadddep } { m m }
+  {
+    \clist_set:Nx \l_tmpa_clist { #1 }
+    \clist_map_inline \l_tmpa_clist
+      {
+        \__declare_package_add_dependencies:xx { ##1 } { #2 }
+      }
+  }
+
+\cs_new:Npn \__declare_package_add_dependencies:xx #1#2
+  {
+    \tl_set:Nn \l_tmpa_tl { g_declare_package_ #1 _post_load_seq }
+    \seq_if_exist:cF { \tl_use:N \l_tmpa_tl } { \seq_new:c { \tl_use:N \l_tmpa_tl } }
+    \clist_set:Nn \l_tmpa_clist { #2 }
+    \clist_map_inline \l_tmpa_clist
+      {
+        \seq_if_in:cnF { \tl_use:N \l_tmpa_tl } { ##1 }
+          {
+            \seq_put_right:cn { \tl_use:N \l_tmpa_tl } { ##1 }
+          }
+      }
+  }
+

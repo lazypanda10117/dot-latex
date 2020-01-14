@@ -83,13 +83,12 @@
       }
     \seq_map_inline:Nn \g_declare_package_should_load_packages_seq
       {
-        \seq_if_in:NnF \g_declare_package_should_not_load_packages_seq { ##1 }
-        %% {
-        %%   \PackageError{declare-package}
-        %%     {Package Collision.}
-        %%     {Package `##1' is both enabled and an antireq.}
-        %% }
-        { \__declare_package_prep_load:n { ##1 } }
+        \seq_if_in:NnTF \g_declare_package_should_not_load_packages_seq { ##1 }
+          {
+            \PackageError{declare-package}
+              {Package~Collision:~`##1'~is~both~enabled~and~an~antireq}{}
+          }
+          { \__declare_package_prep_load:n { ##1 } }
       }
     \seq_map_inline:Nn \g_declare_package_load_packages_seq
       { \__declare_package_load:n { ##1 } }
@@ -117,8 +116,7 @@
     \__declare_package_seq_ginsert:NnF \g_declare_package_prep_load_packages_seq { #2 }
       {
         \PackageError{declare-package}
-          {Dependency tree must be a DAG.}
-          {The dependency `#1' -- `#2' creates a dicycle.}
+          {Dependency~tree~must~be~a~DAG:~`#1'~--~`#2'~creates~a~dicycle}{}
       }
 
     \__declare_package_prep_load:n { #2 }
@@ -168,8 +166,7 @@
     \__declare_package_seq_ginsert:NnF \g_declare_package_packages_seq { #1 }
       {
         \PackageError{declare-package}
-          {Packages should only be declared one.}
-          {Package `#1' declared twice.}
+          {Packages~should~only~be~declared~one:~`#1'~is~declared~twice}{}
       }
 
     \__declare_package_add_options:nn { #1 } { #4 }

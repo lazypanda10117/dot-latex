@@ -1,0 +1,54 @@
+\RequirePackage{twlbase}
+\ProvidesExplPackage{twlgraph}{2020-05-10}{}{}
+
+
+%% Options
+
+\DeclareOption* {}
+\ProcessOptions\relax
+
+
+%% Logic
+
+\bool_if:NT \g__twl_algorithm_bool
+{
+  \declpkg { algorithm }
+  \declpkg { algorithmicx} [ algorithm ]
+  \declpkg { noend } { algpseudocode } [ algorithmicx ]
+}
+
+\bool_if:NTF \g__twl_asyinclude_bool
+{
+  \AddOptionsToPackage { inline } { asymptote }
+} {
+  \declpkg [ dvips ] { attachfile2 } () ( asymptote )
+  \AddOptionsToPackage { attach } { asymptote }
+}
+
+\bool_if:NT \g__twl_asymptote_bool
+{
+  \declpkg { asymptote }
+  \AfterAll { asymptote }
+  {
+    \begin{asydef}
+      import cse5;
+
+      pointpen = black;
+      pathpen = black;
+      pathfontpen = black;
+      anglepen = black;
+      anglefontpen = black;
+      pointfontsize = 10;
+      defaultpen(fontsize(10pt));
+
+      usepackage("amsmath");
+      usepackage("amssymb");
+    \end{asydef}
+    \RenewDocumentCommand \asydir {} { asy }
+  }
+}
+
+\bool_if:NT \g__twl_diagrams_bool
+{
+ \declpkg { diagrams }
+}

@@ -1,0 +1,387 @@
+\RequirePackage{twlbase}
+\ProvidesExplPackage{twlenv}{2020-05-10}{}{}
+
+
+%% Options
+
+\DeclareOption* {}
+\ProcessOptions\relax
+
+
+%% Logic
+
+\bool_if:NT \g__twl_frame_bool
+{
+  \declpkg { framed } ( xcolor )
+  \declpkg [ framemethod = TikZ ] { mdframed } [ tikz, framed ]
+  \bool_if:NT \g__twl_colour_bool
+  {
+    \AfterAny { mdframed }
+    {
+      \mdfdefinestyle { mdblackbox }
+      {
+        nobreak=true,
+        skipabove=8pt,
+        innertopmargin=4pt,
+        innerbottommargin=8pt,
+        skipbelow=4pt,
+        leftline=true,
+        rightline=false,
+        topline=false,
+        bottomline=false,
+        linewidth=3pt,
+        linecolor=Black,
+        backgroundcolor=Black!5,
+      }
+
+      \mdfdefinestyle { mdbluebox }
+      {
+        nobreak=true,
+        skipabove=8pt,
+        innerbottommargin=9pt,
+        skipbelow=4pt,
+        leftline=true,
+        rightline=false,
+        topline=false,
+        bottomline=false,
+        linewidth=3pt,
+        linecolor=NavyBlue!75,
+        backgroundcolor=TealBlue!5,
+      }
+
+      \mdfdefinestyle{mdredbox}
+      {
+        nobreak=true,
+        skipabove=8pt,
+        innertopmargin=4pt,
+        innerbottommargin=8pt,
+        skipbelow=4pt,
+        leftline=true,
+        rightline=false,
+        topline=false,
+        bottomline=false,
+        linewidth=3pt,
+        linecolor=BrickRed!60!Sepia,
+        backgroundcolor=Salmon!5,
+      }
+    }
+  }
+}
+
+\bool_if:NT \g__twl_index_bool
+{
+  \declpkg { makeidx }
+  \AfterAny { makeidx }
+  {
+    \makeindex
+  }
+}
+
+\bool_if:NT \g__twl_theorem_bool
+{
+  \AddOptionsToPackage { ntheorem } { empheq }
+  \declpkg [ amsmath, hyperref, thmmarks, thref ] { ntheorem }
+  [ amsmath, empheq ] [ hyperref ] < amsthm >
+
+  \cs_new_protected:Nn \__twl_thm_noframe:
+  {
+    \theoremprework{}
+    \theorempostwork{}
+  }
+  \cs_new_protected:Nn \__twl_thm_frame:n
+  {
+    \__twl_thm_noframe:
+  }
+  \bool_if:NT \g__twl_frame_bool
+  {
+    \bool_if:NTF \g__twl_colour_bool
+    {
+      \cs_gset_protected:Nn \__twl_thm_frame:n
+      {
+        \tl_if_blank:nTF { #1 }
+        {
+         \theoremprework{kappa \begin{mdframed}}
+        } {
+          \theoremprework{keepo #1 \begin{mdframed}[style= #1 ]}
+        }
+        \theorempostwork{\end{mdframed}}
+      }
+    } {
+      \cs_gset_protected:Nn \__twl_thm_frame:n
+      {
+        \theoremprework{\begin{mdframed}}
+        \theorempostwork{\end{mdframed}}
+      }
+    }
+  }
+
+  \cs_new_protected:Nn \__twl_thm_plain_sty:
+  {
+    \theoremstyle { twlplain }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont { \bfseries }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_noframe:
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_theorem_sty:
+  {
+    \theoremstyle { twlbreak }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont {
+      \sffamily \bfseries
+      \bool_if:NT \g__twl_colour_bool
+      {
+        \color{MidnightBlue}
+      }
+    }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_frame:n { mdbluebox }
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_definition_sty:
+  {
+    \theoremstyle { twlplain }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont {
+      \bfseries
+      \bool_if:NT \g__twl_colour_bool
+      {
+        \color{RawSienna}
+      }
+    }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_frame:n { mdredbox }
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_remark_sty:
+  {
+    \theoremstyle { twlbreak }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont { \bfseries }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_frame:n { mdblackbox }
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_example_sty:
+  {
+    \theoremstyle { twlplain }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont { \bfseries }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_frame:n {}
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_proof_sty:
+  {
+    \theoremstyle { twlplain }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont { \itshape }
+    \theoremseparator { . }
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_noframe:
+
+    \theoremsymbol { \ensuremath{\square} }
+  }
+
+  \cs_new_protected:Nn \__twl_thm_newtheorem:nnn
+  {
+    #1
+    \newtheorem { #2 } [ theorem ] { #3 }
+  }
+
+  \cs_new_protected:Nn \__twl_thm_newtheorem_:nnn
+  {
+    #1
+    \newtheorem* { #2 } { #3 }
+    #1
+    \renewtheorem { #2 * } [ theorem ] { #3 }
+  }
+
+
+  % newtheorem has to be called after hyperref
+  \AfterAll { ntheorem, hyperref }
+  {
+    \newtheoremstyle { twlplain }
+    {
+      \item [
+      \hspace { \labelsep }
+      \theorem@headerfont ##1 \ ##2 \theorem@separator
+      ]
+    } {
+      \item[
+      \rlap {
+        \parbox[b]{0pt} {
+          \hbox
+          {
+            \hspace { \labelsep }
+            \theorem@headerfont ##1\ ##2\ (##3)\theorem@separator
+          }
+          \hbox{\strut}
+        }
+      }
+      ]
+    }
+
+    \newtheoremstyle { nonumbertwlplain }
+    {
+      \item [
+      \hspace { \labelsep }
+      \theorem@headerfont ##1 \theorem@separator
+      ]
+    } {
+      \item [
+      \rlap {
+        \parbox [b] { 0pt }
+        {
+          \mbox
+          {
+            \hspace { \labelsep }
+            \theorem@headerfont ##1\ ( ##3 ) \theorem@separator
+          }
+          \mbox { \strut }
+        }
+      }
+      ]
+    }
+
+    \newtheoremstyle { twlbreak }
+    {
+      \item [
+      \hspace { \labelsep }
+      \theorem@headerfont ##1 \ ##2 \theorem@separator
+      \mbox { \strut }
+      ]
+    } {
+      \item [
+      \rlap {
+        \parbox [b] { 0pt }
+        {
+          \mbox
+          {
+            \hspace { \labelsep }
+            \theorem@headerfont ##1 \ ##2 \ ( ##3 ) \theorem@separator
+          }
+          \mbox { \strut }
+        }
+      }
+      ]
+    }
+
+    \newtheoremstyle { nonumbertwlbreak }
+    {
+      \item [
+      \hspace { \labelsep }
+      \theorem@headerfont ##1 \theorem@separator
+      \mbox { \strut }
+      ]
+    } {
+      \item [
+      \rlap {
+        \parbox [b] { 0pt }
+        {
+          \mbox
+          {
+            \hspace { \labelsep }
+            \theorem@headerfont ##1 \ ( ##3 ) \theorem@separator
+          }
+          \mbox { \strut }
+        }
+      }
+      ]
+    }
+
+    \bool_if:NTF \g__twl_thmsection_bool
+    {
+      \newtheorem { theorem } { Theorem } [ section ]
+    } {
+      \newtheorem { theorem } { Theorem }
+    }
+
+    \__twl_thm_newtheorem:nnn \__twl_thm_plain_sty: { notation } { Notation }
+
+    \__twl_thm_newtheorem_:nnn \__twl_thm_plain_sty: { note } { Note }
+    \__twl_thm_newtheorem_:nnn \__twl_thm_plain_sty: { recall } { Recall }
+
+    \__twl_thm_newtheorem:nnn \__twl_thm_remark_sty: { remark } { Remark }
+
+    \__twl_thm_newtheorem:nnn \__twl_thm_theorem_sty: { axiom } { Axiom }
+    \__twl_thm_newtheorem:nnn \__twl_thm_theorem_sty: { lemma } { Lemma }
+    \__twl_thm_newtheorem:nnn \__twl_thm_theorem_sty: { proposition } { Proposition }
+    \__twl_thm_newtheorem:nnn \__twl_thm_theorem_sty: { corollary } { Corollary }
+
+    \__twl_thm_newtheorem:nnn \__twl_thm_definition_sty: { definition } { Definition }
+
+    \__twl_thm_newtheorem:nnn \__twl_thm_example_sty: { example } { Example }
+    \__twl_thm_newtheorem:nnn \__twl_thm_example_sty: { conjecture } { Conjecture }
+    \__twl_thm_newtheorem:nnn \__twl_thm_example_sty: { exercise } { Exercise }
+
+    \__twl_thm_newtheorem_:nnn \__twl_thm_proof_sty: { proof } { Proof }
+    \__twl_thm_newtheorem_:nnn \__twl_thm_proof_sty: { solution } { Solution }
+
+    \__twl_thm_newtheorem_:nnn
+    {
+      \__twl_thm_proof_sty:
+      \theoremsymbol { \ensuremath{\blacksquare} }
+    } { subproof } { Proof }
+  }
+
+  \NewDocumentCommand \vocab { s o m o }
+  {
+    \bool_if:NTF \g__twl_colour_bool
+    {
+      \textbf{\color{Red} #3}
+    } {
+      \emph{#3}
+    }
+
+    \bool_if:NT \g__twl_index_bool
+    {
+      \IfBooleanTF { #1 } {}
+      {
+        \group_begin:
+        \IfValueTF { #2 }
+        {
+          \tl_set:Nn \l_tmpa_tl { #2 }
+        } {
+          \tl_set:Nn \l_tmpa_tl { #3 }
+        }
+
+        \IfValueTF { #4 }
+        {
+          \index { \tl_use:N \l_tmpa_tl | #4 }
+        } {
+          \index { \tl_use:N \l_tmpa_tl }
+        }
+        \group_end:
+      }
+    }
+  }
+}

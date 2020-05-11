@@ -184,6 +184,10 @@
 
 \LoadClass [12pt] { \tl_use:N \c__twl_base_class_tl }
 
+\declpkg { booktabs }
+\declpkg { multirow }
+\declpkg { soulutf8 }
+
 \AddOptionsToPackage
 { \bool_if:NTF \g__twl_letterpaper_bool { letterpaper } { a4paper } }
 { \tl_use:N \c__twl_base_class_tl }

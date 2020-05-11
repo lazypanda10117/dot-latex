@@ -15,6 +15,13 @@
 \declpkg { lmodern }
 \declpkg [ letterpaper, margin=1.25in, tmargin=1in ] { geometry }
 \declpkg { titling }
+\declpkg { hyperref }
+\bool_if:NTF \g__twl_colour_bool
+{
+  \AddOptionsToPackage { colorlinks } { hyperref }
+} {
+  \AddOptionsToPackage { hidelinks } { hyperref }
+}
 
 \AfterAll { titling }
 {

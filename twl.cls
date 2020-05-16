@@ -98,7 +98,7 @@
   \bool_gset_false:N \g__twl_siunitx_bool
 
   \bool_gset_false:N \g__twl_colour_bool
-  \bool_gset_false:N \g__twl_header_bool
+  \bool_gset_true:N \g__twl_header_bool
   \bool_gset_true:N \g__twl_problem_bool
   \bool_gset_false:N \g__twl_section_bool
   \bool_gset_false:N \g__twl_title_bool

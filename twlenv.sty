@@ -49,7 +49,7 @@
         backgroundcolor=TealBlue!5,
       }
 
-      \mdfdefinestyle{mdredbox}
+      \mdfdefinestyle{ mdredbox }
       {
         nobreak=true,
         skipabove=8pt,
@@ -64,6 +64,22 @@
         linecolor=BrickRed!60!Sepia,
         backgroundcolor=Salmon!5,
       }
+
+      \mdfdefinestyle{ mdpinkbox }{%
+        nobreak=true,
+        skipabove=8pt,
+        innertopmargin=4pt,
+        innerbottommargin=8pt,
+        skipbelow=4pt,
+        leftline=true,
+        rightline=false,
+        topline=false,
+        bottomline=false,
+        linewidth=3pt,
+        linecolor=CarnationPink!80!Sepia,
+        backgroundcolor=CarnationPink!5,
+      }
+
     }
   }
 }
@@ -130,6 +146,26 @@
     \theorembodyfont { \normalfont }
 
     \__twl_thm_noframe:
+
+    \theoremsymbol {}
+  }
+
+  \cs_new_protected:Nn \__twl_thm_main_sty:
+  {
+    \theoremstyle { twlbreak }
+
+    \theoremnumbering { arabic }
+    \theoremheaderfont {
+      \sffamily \bfseries
+      \bool_if:NT \g__twl_colour_bool
+      {
+        \color{CarnationPink!80!Sepia}
+      }
+    }
+    \theoremseparator {}
+    \theorembodyfont { \normalfont }
+
+    \__twl_thm_frame:n { mdpinkbox }
 
     \theoremsymbol {}
   }
@@ -365,6 +401,7 @@
       ]
     }
 
+    \__twl_thm_main_sty:
     \bool_if:NTF \g__twl_thmsection_bool
     {
       \newtheorem { theorem } { Theorem } [ section ]

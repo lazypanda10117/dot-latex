@@ -34,18 +34,46 @@
   \declpkg [ usenames, svgnames, dvipsnames] { xcolor }
 }
 
+% \bool_if:NT \g__twl_header_bool
+% {
+%   \declpkg { fancyhdr } [ titling ]
+%   \AfterAll { fancyhdr }
+%   {
+%     \pagestyle { fancy }
+%     \fancyhead [L] { \footnotesize \textbf{\@author} }
+%     \fancyhead [C] { \footnotesize \textbf{\@title} }
+%     \fancyhead [R] { \footnotesize \textbf{\leftmark} }
+%     \fancyfoot [C] { \thepage }
+
+%     \bool_if:NT \g__twl_title_bool { \thispagestyle { plain } }
+%   }
+% }
+
 \bool_if:NT \g__twl_header_bool
 {
   \declpkg { fancyhdr } [ titling ]
   \AfterAll { fancyhdr }
   {
-    \pagestyle { fancy }
-    \fancyhead [L] { \footnotesize \textbf{\@author} }
-    \fancyhead [C] { \footnotesize \textbf{\@title} }
-    \fancyhead [R] { \footnotesize \textbf{\leftmark} }
-    \fancyfoot [C] { \thepage }
+    \bool_if:NT \g__twl_cheader_bool
+    {
+      \pagestyle { fancy }
+      \fancyhead [L] { \footnotesize \textbf{\@title} }
+      \fancyhead [C] { \footnotesize \textbf{} }
+      \fancyhead [R] { \footnotesize \textbf{\leftmark} }
+      \fancyfoot [C] { \thepage }
 
-    \bool_if:NT \g__twl_title_bool { \thispagestyle { plain } }
+      \bool_if:NT \g__twl_title_bool { \thispagestyle { plain } }
+    }
+    \bool_if:NF \g__twl_cheader_bool
+    {
+      \pagestyle { fancy }
+      \fancyhead [L] { \footnotesize \textbf{\@author} }
+      \fancyhead [C] { \footnotesize \textbf{\@title} }
+      \fancyhead [R] { \footnotesize \textbf{\@date} }
+      \fancyfoot [C] { \thepage }
+
+      \bool_if:NT \g__twl_title_bool { \thispagestyle { plain } }
+    }
   }
 }
 

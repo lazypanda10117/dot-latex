@@ -156,7 +156,7 @@
 
     \theoremnumbering { arabic }
     \theoremheaderfont {
-      \sffamily \bfseries
+      \bfseries
       \bool_if:NT \g__twl_colour_bool
       {
         \color{CarnationPink!80!Sepia}
@@ -176,7 +176,7 @@
 
     \theoremnumbering { arabic }
     \theoremheaderfont {
-      \sffamily \bfseries
+      \bfseries
       \bool_if:NT \g__twl_colour_bool
       {
         \color{MidnightBlue}
@@ -189,6 +189,27 @@
 
     \theoremsymbol {}
   }
+
+  % \cs_new_protected:Nn \__twl_thm_theorem_sty:
+  % {
+  %   \theoremstyle { twlbreak }
+
+  %   \theoremnumbering { arabic }
+  %   \theoremheaderfont {
+  %     \sffamily \bfseries
+  %     \bool_if:NT \g__twl_colour_bool
+  %     {
+  %       \color{MidnightBlue}
+  %     }
+  %   }
+  %   \theoremseparator {}
+  %   \theorembodyfont { \normalfont }
+
+  %   \__twl_thm_frame:n { mdbluebox }
+
+  %   \theoremsymbol {}
+  % }
+
 
   \cs_new_protected:Nn \__twl_thm_definition_sty:
   {
@@ -424,6 +445,7 @@
     \__twl_thm_newtheorem:nnn \__twl_thm_theorem_sty: { corollary } { Corollary }
 
     \__twl_thm_newtheorem:nnn \__twl_thm_definition_sty: { definition } { Definition }
+    \__twl_thm_newtheorem:nnn \__twl_thm_definition_sty: { algo } { Algorithm }
 
     \__twl_thm_newtheorem:nnn \__twl_thm_example_sty: { example } { Example }
     \__twl_thm_newtheorem:nnn \__twl_thm_example_sty: { conjecture } { Conjecture }

@@ -40,10 +40,13 @@
   \DeclarePairedDelimiter { \gen } { \langle } { \rangle }
   \DeclarePairedDelimiterX { \innerp } [ 2 ] { \langle } { \rangle } { #1, #2 }
   \DeclarePairedDelimiter { \set } { \{ } { \} }
+  \DeclarePairedDelimiter { \bark } { | } { \rangle }
 }
 
 
 \NewDocumentCommand { \Tau } {} { \mathcal{T} } %Tau
+\NewDocumentCommand { \GC } {} { \mathcal{G} } %Graph class
+\NewDocumentCommand { \HC } {} { \mathcal{H} } %Graph Class 2
 \NewDocumentCommand { \NN } {} { \mathbb{N} } %Natural
 \NewDocumentCommand { \ZZ } {} { \mathbb{Z} } %Integer
 \NewDocumentCommand { \QQ } {} { \mathbb{Q} } %Rational
@@ -85,6 +88,7 @@
   \DeclareMathOperator { \Iso } { Iso } %isomorphism
   \DeclareMathOperator { \End } { End } %endomorphism
   \DeclareMathOperator { \Aut } { Aut } %automorphism
+  \DeclareMathOperator { \Sym } { Sym } %innermorphism
   \DeclareMathOperator { \Inn } { Inn } %innermorphism
   \DeclareMathOperator { \Perm } { Perm } %permutation
 
@@ -111,6 +115,8 @@
 
   \NewDocumentCommand { \liff } {} { \mathbin \leftrightarrow } %ifandonlyif
   \NewDocumentCommand { \lthen } {} { \mathbin \rightarrow } %ifthen
+
+  \NewDocumentCommand { \then } {} { \Rightarrow } %ifthen
 
   \NewDocumentCommand { \ot } {} { \mathbin \leftarrow }
   \NewDocumentCommand { \dg } {} { ^\circ }
